@@ -10,7 +10,7 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
   tileSize: 512,
   maxZoom: 18,
   zoomOffset: -1,
-  id: "mapbox/outdoors-v11",
+  id: "mapbox/light-v10",
   accessToken: API_KEY
 }).addTo(myMap);
 
@@ -18,22 +18,22 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 var url = "http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2020-10-01&endtime=" +
   "2020-10-07&maxlongitude=-69.52148437&minlongitude=-123.83789062&maxlatitude=48.74894534&minlatitude=25.16517337";
 
-function colorPicker(magnitude){
+function colorPicker(gap){
   var result = 'lightgreen';
 
-  if (magnitude >5) {
+  if (gap >90) {
     result = 'red';
   } 
-  else if (magnitude >4) {
+  else if (gap >70) {
     result = 'darkorange'
   }
-  else if (magnitude >3) {
+  else if (gap >50) {
     result = 'tan'
   }
-  else if (magnitude >2) {
+  else if (gap >30) {
     result = 'yellow'
   }
-  else if (magnitude >1) {
+  else if (gap >10) {
     result = 'yellowgreen'
   }
       
@@ -41,16 +41,18 @@ function colorPicker(magnitude){
 };
 
 d3.json(url, function(response) {
+  console.log(response);
   var earthquake = response.features;
   console.log(earthquake[0].properties);
   earthquake.forEach(report => {
     const magnitude = report.properties.mag;
     const location = report.geometry;
-    if (magnitude){
+    const gap=location.coordinates[2];
+    if (gap){
       L.circle([location.coordinates[1], location.coordinates[0]],{
-        fillOpacity: 0.7,
+        fillOpacity: 0.9,
         color: "white",
-        fillColor: colorPicker(magnitude),
+        fillColor: colorPicker(gap),
         radius: magnitude*10000
       }).bindPopup(`<h2>${report.properties.place}</h2><hr /><h3>Time: ${report.properties.time}<br />Magnitude: ${magnitude}</h3>`)
       .addTo(myMap);
@@ -59,7 +61,7 @@ d3.json(url, function(response) {
   var legend = L.control({position: "bottomright"});
   legend.onAdd = function(){
     var div = L.DomUtil.create('div', 'info legend'),
-      grades = [0, 1, 2, 3, 4, 5],
+      grades = [-10, 10, 30, 50, 70, 90],
     
       labels = [];
     for (var i = 0; i < grades.length; i++) {
