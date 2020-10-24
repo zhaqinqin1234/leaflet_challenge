@@ -1,6 +1,6 @@
 var myMap = L.map("mapid", {
-  center: [34.0522, -118.2437],
-  zoom: 7
+  center: [36.778259, -110.417931],
+  zoom: 6
 });
 
 // Add a tile layer (the background map image) to our map
@@ -10,7 +10,7 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
   tileSize: 512,
   maxZoom: 18,
   zoomOffset: -1,
-  id: "mapbox/streets-v11",
+  id: "mapbox/outdoors-v11",
   accessToken: API_KEY
 }).addTo(myMap);
 
@@ -19,7 +19,7 @@ var url = "http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&startt
   "2020-10-07&maxlongitude=-69.52148437&minlongitude=-123.83789062&maxlatitude=48.74894534&minlatitude=25.16517337";
 
 function colorPicker(magnitude){
-  var result = 'greenyellow';
+  var result = 'lightgreen';
 
   if (magnitude >5) {
     result = 'red';
@@ -28,10 +28,10 @@ function colorPicker(magnitude){
     result = 'darkorange'
   }
   else if (magnitude >3) {
-    result = 'orange'
+    result = 'tan'
   }
   else if (magnitude >2) {
-    result = 'gold'
+    result = 'yellow'
   }
   else if (magnitude >1) {
     result = 'yellowgreen'
@@ -48,7 +48,7 @@ d3.json(url, function(response) {
     const location = report.geometry;
     if (magnitude){
       L.circle([location.coordinates[1], location.coordinates[0]],{
-        fillOpacity: 0.75,
+        fillOpacity: 0.7,
         color: "white",
         fillColor: colorPicker(magnitude),
         radius: magnitude*10000
